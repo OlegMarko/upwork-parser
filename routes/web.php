@@ -12,5 +12,11 @@
 */
 
 Route::get('/', function () {
+    return response()->json(\Carbon\Carbon::now()->toDateTimeString(), 200);
+});
+
+Route::get('/check-uw', function () {
     Artisan::call('check:upwork');
+
+    return response()->json('success', 200);
 });

@@ -40,7 +40,10 @@ class CheckUpWork extends Command
      */
     public function handle()
     {
-        $now = Carbon::now()->timestamp;
+        $now = Carbon::now();
+        if ($now->hour < 7 || $now->hour > 16) {
+            return true;
+        }
 
         $reader = new UpWorkReader();
         $jobs = $reader->fetchJobs('php,laravel');
@@ -55,12 +58,12 @@ class CheckUpWork extends Command
 
         foreach($jobs as $job) {
 
-            dd(Carbon::parse($job->posted_date)->timestamp);
+            if ($now->timestamp - (int)$job->created_timestamp >= (15 * 60)) continue;
 
             $client->to('#upwork')->attach([
                 'title'=> $job->title,
                 'title_link'=> $job->link,
-                'color' => '#36a64f',
+                'color' => '#00cc00',
                 'fields' => [[
                     'title' => 'category',
                     'value' => $job->category,
@@ -75,9 +78,14 @@ class CheckUpWork extends Command
                     'value' => $job->budget . " $",
                 ],[
                     'title' => 'posted_date',
-                    'value' => $job->posted_date,
+                    'value' => $job->created_date,
+                ],[
+                    'title' => 'posted_date',
+                    'value' => Carbon::parse($job->created_date)->diffForHumans(),
                 ]]
             ])->send('');
         }
+
+        return true;
     }
 }

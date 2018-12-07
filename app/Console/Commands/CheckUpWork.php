@@ -70,7 +70,7 @@ class CheckUpWork extends Command
 
         foreach($jobs as $job) {
 
-            if ($now->timestamp - (int)$job->created_timestamp >= (16 * 60)) continue;
+            if ($now->timestamp - (int)$job->created_timestamp > (16 * 60)) continue;
 
             $client->to('#upwork')->attach([
                 'title'=> $job->title,

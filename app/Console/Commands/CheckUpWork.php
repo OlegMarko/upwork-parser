@@ -46,7 +46,19 @@ class CheckUpWork extends Command
         }
 
         $reader = new UpWorkReader();
-        $jobs = $reader->fetchJobs('php,laravel');
+
+        $jobs1 = $reader->fetchJobs('php');
+        sleep(3);
+        $jobs2 = $reader->fetchJobs('php,laravel');
+        sleep(3);
+        $jobs3 = $reader->fetchJobs('php,symphony');
+        sleep(3);
+        $jobs4 = $reader->fetchJobs('javascript,angular');
+
+        $jobsM1 = array_merge_recursive($jobs1, $jobs2);
+        $jobsM2 = array_merge_recursive($jobs3, $jobs4);
+
+        $jobs = array_merge_recursive($jobsM1, $jobsM2);
 
         $settings = [
             'username' => 'UpWork Bot',
@@ -58,7 +70,7 @@ class CheckUpWork extends Command
 
         foreach($jobs as $job) {
 
-            if ($now->timestamp - (int)$job->created_timestamp >= (15 * 60)) continue;
+            if ($now->timestamp - (int)$job->created_timestamp >= (16 * 60)) continue;
 
             $client->to('#upwork')->attach([
                 'title'=> $job->title,

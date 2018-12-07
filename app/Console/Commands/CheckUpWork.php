@@ -6,6 +6,7 @@ use App\Services\UpWorkReader;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Maknz\Slack\Client;
+use Log;
 
 class CheckUpWork extends Command
 {
@@ -67,6 +68,7 @@ class CheckUpWork extends Command
         ];
 
         $client = new Client(env('SLACK_WEBHOOK_URL'), $settings);
+        $count = 0;
 
         foreach($jobs as $job) {
 
@@ -84,10 +86,10 @@ class CheckUpWork extends Command
                     'value' => $job->country,
                 ],[
                     'title' => 'skills',
-                    'value' => implode(', ', $job->skills),
+                    'value' => is_array($job->skills) ? implode(', ', $job->skills) : 'empty',
                 ],[
                     'title' => 'budget',
-                    'value' => $job->budget . " $",
+                    'value' => str_replace('\n', ' $', $job->budget),
                 ],[
                     'title' => 'posted_date',
                     'value' => $job->created_date,
@@ -96,7 +98,11 @@ class CheckUpWork extends Command
                     'value' => Carbon::parse($job->created_date)->diffForHumans(),
                 ]]
             ])->send('');
+
+            $count++;
         }
+
+        Log::info($count);
 
         return true;
     }

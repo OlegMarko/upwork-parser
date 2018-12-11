@@ -88,9 +88,6 @@ class CheckUpWork extends Command
         foreach($jobs as $job) {
             if ($now->timestamp - (int)$job->created_timestamp > (16 * 60)) continue;
 
-            dump($job->budget);
-            continue;
-
             $client->to('#upwork')->attach([
                 'title'=> $job->title,
                 'title_link'=> $job->link,

@@ -57,18 +57,24 @@ class CheckUpWork extends Command
 
         $reader = new UpWorkReader();
 
-        $jobs1 = $reader->fetchJobs('php');
+        $jobs1 = $reader->fetchJobs('email chain');
         sleep(3);
-        $jobs2 = $reader->fetchJobs('php,laravel');
+        $jobs2 = $reader->fetchJobs('CRM setup');
         sleep(3);
-        $jobs3 = $reader->fetchJobs('php,symphony');
+        $jobs3 = $reader->fetchJobs('automation');
         sleep(3);
-        $jobs4 = $reader->fetchJobs('javascript,angular');
+        $jobs4 = $reader->fetchJobs('HubSpot');
+        sleep(3);
+        $jobs5 = $reader->fetchJobs('pipedrive');
+        sleep(3);
+        $jobs6 = $reader->fetchJobs('Marketing Automation Email Marketing');
 
         $jobsM1 = array_merge_recursive($jobs1, $jobs2);
         $jobsM2 = array_merge_recursive($jobs3, $jobs4);
+        $jobsM3 = array_merge_recursive($jobs5, $jobs6);
 
-        $collection = collect(array_merge_recursive($jobsM1, $jobsM2));
+        $collection = array_merge_recursive($jobsM1, $jobsM2);
+        $collection = collect(array_merge_recursive($collection, $jobsM3));
 
         $jobs = $collection->map(function ($array) {
             return collect($array)->unique()->all();

@@ -140,7 +140,7 @@ class UpWorkReader
          * Query
          */
         if ($q) {
-            $request_url .= "&q=" . $q;
+            $request_url .= '&' . http_build_query(['q' => $q]);
         }
 
         return $request_url . '&api_params=1';

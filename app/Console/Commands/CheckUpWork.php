@@ -73,12 +73,8 @@ class CheckUpWork extends Command
         $jobsM2 = array_merge_recursive($jobs3, $jobs4);
         $jobsM3 = array_merge_recursive($jobs5, $jobs6);
 
-        $collection = array_merge_recursive($jobsM1, $jobsM2);
-        $collection = collect(array_merge_recursive($collection, $jobsM3));
-
-        $jobs = $collection->map(function ($array) {
-            return collect($array)->unique()->all();
-        });
+        $jobs = array_merge_recursive($jobsM1, $jobsM2);
+        $jobs = array_merge_recursive($jobs, $jobsM3);
 
         $settings = [
             'username' => 'UpWork Bot',
@@ -90,30 +86,33 @@ class CheckUpWork extends Command
         $count = 0;
 
         foreach($jobs as $job) {
-            if ($now->timestamp - (int)$job['created_timestamp'] > (16 * 60)) continue;
+            if ($now->timestamp - (int)$job->created_timestamp > (16 * 60)) continue;
+
+            dump($job->budget);
+            continue;
 
             $client->to('#upwork')->attach([
-                'title'=> $job['title'],
-                'title_link'=> $job['link'],
+                'title'=> $job->title,
+                'title_link'=> $job->link,
                 'color' => '#00cc00',
                 'fields' => [[
                     'title' => 'category',
-                    'value' => $job['category'],
+                    'value' => $job->category,
                 ],[
                     'title' => 'country',
-                    'value' => $job['country'],
+                    'value' => $job->country,
                 ],[
                     'title' => 'skills',
-                    'value' => is_array($job['skills']) ? implode(', ', $job['skills']) : 'empty',
+                    'value' => is_array($job->skills) ? implode(', ', $job->skills) : 'empty',
                 ],[
                     'title' => 'budget',
-                    'value' => str_replace("\n", ' $', $job['budget']),
+                    'value' => str_replace("\n", ' $', $job->budget),
                 ],[
                     'title' => 'posted_date',
-                    'value' => $job['created_date'],
+                    'value' => $job->created_date,
                 ],[
                     'title' => 'posted_date',
-                    'value' => Carbon::parse($job['created_date'])->diffForHumans(),
+                    'value' => Carbon::parse($job->created_date)->diffForHumans(),
                 ]]
             ])->send('');
 

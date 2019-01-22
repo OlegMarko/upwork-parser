@@ -34,15 +34,6 @@ class CheckUpWork extends Command
         parent::__construct();
     }
 
-    public function unique_obj($obj) {
-        static $idList = array();
-        if(in_array($obj->id,$idList)) {
-            return false;
-        }
-        $idList []= $obj->id;
-        return true;
-    }
-
     /**
      * Execute the console command.
      *
@@ -57,24 +48,25 @@ class CheckUpWork extends Command
 
         $reader = new UpWorkReader();
 
-        $jobs1 = $reader->fetchJobs('email chain');
-        sleep(3);
-        $jobs2 = $reader->fetchJobs('CRM setup');
-        sleep(3);
-        $jobs3 = $reader->fetchJobs('automation');
-        sleep(3);
-        $jobs4 = $reader->fetchJobs('HubSpot');
-        sleep(3);
-        $jobs5 = $reader->fetchJobs('pipedrive');
-        sleep(3);
-        $jobs6 = $reader->fetchJobs('Marketing Automation Email Marketing');
+        $keywords = [
+            'email chain',
+            'CRM setup',
+            'automation',
+            'HubSpot',
+            'pipedrive',
+            'Marketing Automation Email Marketing',
+            'laravel'
+        ];
 
-        $jobsM1 = array_merge_recursive($jobs1, $jobs2);
-        $jobsM2 = array_merge_recursive($jobs3, $jobs4);
-        $jobsM3 = array_merge_recursive($jobs5, $jobs6);
+        $jobs = [];
 
-        $jobs = array_merge_recursive($jobsM1, $jobsM2);
-        $jobs = array_merge_recursive($jobs, $jobsM3);
+        foreach ($keywords as $keyword) {
+            $newJobs = $reader->fetchJobs($keyword);
+
+            $jobs = array_merge_recursive($jobs, $newJobs);
+
+            sleep(2);
+        }
 
         $settings = [
             'username' => 'UpWork Bot',
@@ -85,8 +77,13 @@ class CheckUpWork extends Command
         $client = new Client(env('SLACK_WEBHOOK_URL'), $settings);
         $count = 0;
 
+        $existing = [];
+
         foreach($jobs as $job) {
-            if ($now->timestamp - (int)$job->created_timestamp > (16 * 60)) continue;
+            if ($now->timestamp - (int)$job->created_timestamp > ((15 * 60) + 1)) continue;
+            if (in_array($job->title, $existing)) continue;
+
+            $existing[] = $job->title;
 
             $client->to('#upwork')->attach([
                 'title'=> $job->title,

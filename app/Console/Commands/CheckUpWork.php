@@ -48,35 +48,27 @@ class CheckUpWork extends Command
 
         $reader = new UpWorkReader();
 
-        $jobs1 = $reader->fetchJobs('Blockchain');
-        sleep(3);
-        $jobs2 = $reader->fetchJobs('STO');
-        sleep(3);
-        $jobs3 = $reader->fetchJobs('ICO');
-        sleep(3);
-        $jobs4 = $reader->fetchJobs('White Paper');
-        sleep(3);
-        $jobs5 = $reader->fetchJobs('token sale');
-        sleep(3);
-        $jobs6 = $reader->fetchJobs('bitcoin');
-        sleep(3);
-        $jobs7 = $reader->fetchJobs('ethereum');
-        sleep(3);
-        $jobs8 = $reader->fetchJobs('smart contract');
-        sleep(3);
-        $jobs9 = $reader->fetchJobs('ICO Marketing');
+        $keywords = [
+            'Blockchain',
+            'STO',
+            'ICO',
+            'White Paper',
+            'token sale',
+            'bitcoin',
+            'ethereum',
+            'smart contract',
+            'ICO Marketing'
+        ];
 
-        $jobsM1 = array_merge_recursive($jobs1, $jobs2);
-        $jobsM2 = array_merge_recursive($jobs3, $jobs4);
-        $jobsM3 = array_merge_recursive($jobs5, $jobs6);
-        $jobsM4 = array_merge_recursive($jobs7, $jobs8);
+        $jobs = [];
 
-        $jobs1 = array_merge_recursive($jobsM1, $jobsM2);
-        $jobs2 = array_merge_recursive($jobsM3, $jobsM4);
+        foreach ($keywords as $keyword) {
+            $newJobs = $reader->fetchJobs($keyword);
 
-        $jobs3 = array_merge_recursive($jobs1, $jobs2);
+            $jobs = array_merge_recursive($jobs, $newJobs);
 
-        $jobs = array_merge_recursive($jobs3, $jobs9);
+            sleep(2);
+        }
 
         $existing = [];
 

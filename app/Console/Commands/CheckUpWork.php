@@ -34,15 +34,6 @@ class CheckUpWork extends Command
         parent::__construct();
     }
 
-    public function unique_obj($obj) {
-        static $idList = array();
-        if(in_array($obj->id,$idList)) {
-            return false;
-        }
-        $idList []= $obj->id;
-        return true;
-    }
-
     /**
      * Execute the console command.
      *
@@ -57,24 +48,37 @@ class CheckUpWork extends Command
 
         $reader = new UpWorkReader();
 
-        $jobs1 = $reader->fetchJobs('email chain');
+        $jobs1 = $reader->fetchJobs('Blockchain');
         sleep(3);
-        $jobs2 = $reader->fetchJobs('CRM setup');
+        $jobs2 = $reader->fetchJobs('STO');
         sleep(3);
-        $jobs3 = $reader->fetchJobs('automation');
+        $jobs3 = $reader->fetchJobs('ICO');
         sleep(3);
-        $jobs4 = $reader->fetchJobs('HubSpot');
+        $jobs4 = $reader->fetchJobs('White Paper');
         sleep(3);
-        $jobs5 = $reader->fetchJobs('pipedrive');
+        $jobs5 = $reader->fetchJobs('token sale');
         sleep(3);
-        $jobs6 = $reader->fetchJobs('Marketing Automation Email Marketing');
+        $jobs6 = $reader->fetchJobs('bitcoin');
+        sleep(3);
+        $jobs7 = $reader->fetchJobs('ethereum');
+        sleep(3);
+        $jobs8 = $reader->fetchJobs('smart contract');
+        sleep(3);
+        $jobs9 = $reader->fetchJobs('ICO Marketing');
 
         $jobsM1 = array_merge_recursive($jobs1, $jobs2);
         $jobsM2 = array_merge_recursive($jobs3, $jobs4);
         $jobsM3 = array_merge_recursive($jobs5, $jobs6);
+        $jobsM4 = array_merge_recursive($jobs7, $jobs8);
 
-        $jobs = array_merge_recursive($jobsM1, $jobsM2);
-        $jobs = array_merge_recursive($jobs, $jobsM3);
+        $jobs1 = array_merge_recursive($jobsM1, $jobsM2);
+        $jobs2 = array_merge_recursive($jobsM3, $jobsM4);
+
+        $jobs3 = array_merge_recursive($jobs1, $jobs2);
+
+        $jobs = array_merge_recursive($jobs3, $jobs9);
+
+        $existing = [];
 
         $settings = [
             'username' => 'UpWork Bot',
@@ -86,7 +90,10 @@ class CheckUpWork extends Command
         $count = 0;
 
         foreach($jobs as $job) {
-            if ($now->timestamp - (int)$job->created_timestamp > (16 * 60)) continue;
+            if ($now->timestamp - (int)$job->created_timestamp > ((15 * 60) + 1)) continue;
+            if (in_array($job->title, $existing)) continue;
+
+            $existing[] = $job->title;
 
             $client->to('#upwork')->attach([
                 'title'=> $job->title,
@@ -115,8 +122,6 @@ class CheckUpWork extends Command
 
             $count++;
         }
-
-        Log::info($count);
 
         return true;
     }

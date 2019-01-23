@@ -57,7 +57,8 @@ class CheckUpWork extends Command
             'bitcoin',
             'ethereum',
             'smart contract',
-            'ICO Marketing'
+            'ICO Marketing',
+            'solidity'
         ];
 
         $jobs = [];

@@ -51,10 +51,10 @@ class CheckUpWork extends Command
         $keywords = [
             'email chain',
             'CRM setup',
-            'automation',
+            'Marketing Automation',
             'HubSpot',
             'pipedrive',
-            'Marketing Automation Email Marketing',
+            'Email Marketing',
             'laravel'
         ];
 

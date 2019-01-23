@@ -42,7 +42,7 @@ class CheckUpWork extends Command
     public function handle()
     {
         $now = Carbon::now();
-        if ($now->hour < 7 || $now->hour > 16) {
+        if ($now->hour < 6 || $now->hour > 20) {
             return true;
         }
 

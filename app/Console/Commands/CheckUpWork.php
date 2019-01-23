@@ -90,7 +90,7 @@ class CheckUpWork extends Command
             $client->to('#upwork')->attach([
                 'title'=> $job->title,
                 'title_link'=> $job->link,
-                'color' => '#00cc00',
+                'color' => '#37a000',
                 'fields' => [[
                     'title' => 'category',
                     'value' => $job->category,

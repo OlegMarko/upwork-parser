@@ -49,13 +49,25 @@ class CheckUpWork extends Command
         $reader = new UpWorkReader();
 
         $keywords = [
-            'email chain',
-            'CRM setup',
-            'Marketing Automation',
+            'CRM',
+            'Pipedrive',
+            'Slack',
+            'Salesforce',
             'HubSpot',
-            'pipedrive',
-            'Email Marketing',
-            'laravel'
+            'automation workflow',
+            'Calendly',
+            'TypeForm',
+            'SalesForce',
+            'Pardot',
+            'ActiveCampaign',
+            'MailChimp',
+            'Zoho',
+            'Mailgun',
+            'Slack',
+            'Zoom',
+            'Stripe',
+            'ERP',
+            'BPM',
         ];
 
         $jobs = [];

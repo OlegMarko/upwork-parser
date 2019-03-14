@@ -75,7 +75,7 @@ class CheckDevUpWork extends Command
 
             $jobs = array_merge_recursive($jobs, $newJobs);
 
-            sleep(2);
+            sleep(10);
         }
 
         $settings = [

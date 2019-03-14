@@ -65,6 +65,7 @@ class CheckDevUpWork extends Command
             'Develop website',
             'CRM',
             'ERP',
+            'PHP',
         ];
 
         $jobs = [];

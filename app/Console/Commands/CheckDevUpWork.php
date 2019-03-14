@@ -95,32 +95,36 @@ class CheckDevUpWork extends Command
 
             $existing[] = $job->title;
 
-            $client->to('#upwork')->attach([
-                'title'=> $job->title,
-                'title_link'=> $job->link,
-                'color' => '#00cc00',
-                'fields' => [[
-                    'title' => 'category',
-                    'value' => $job->category,
-                ],[
-                    'title' => 'country',
-                    'value' => $job->country,
-                ],[
-                    'title' => 'skills',
-                    'value' => is_array($job->skills) ? implode(', ', $job->skills) : 'empty',
-                ],[
-                    'title' => 'budget',
-                    'value' => str_replace("\n", ' $', $job->budget),
-                ],[
-                    'title' => 'posted_date',
-                    'value' => $job->created_date,
-                ],[
-                    'title' => 'posted_date',
-                    'value' => Carbon::parse($job->created_date)->diffForHumans(),
-                ]]
-            ])->send('');
+            try {
+                $client->to('#upwork')->attach([
+                    'title'=> $job->title,
+                    'title_link'=> $job->link,
+                    'color' => '#cc0000',
+                    'fields' => [[
+                        'title' => 'category',
+                        'value' => $job->category,
+                    ],[
+                        'title' => 'country',
+                        'value' => $job->country,
+                    ],[
+                        'title' => 'skills',
+                        'value' => is_array($job->skills) ? implode(', ', $job->skills) : 'empty',
+                    ],[
+                        'title' => 'budget',
+                        'value' => str_replace("\n", ' $', $job->budget),
+                    ],[
+                        'title' => 'posted_date',
+                        'value' => $job->created_date,
+                    ],[
+                        'title' => 'posted_date',
+                        'value' => Carbon::parse($job->created_date)->diffForHumans(),
+                    ]]
+                ])->send('');
 
-            $count++;
+                $count++;
+            } catch (Exception $e) {
+                Log::info($job->link);
+            }
         }
 
         Log::info($count);

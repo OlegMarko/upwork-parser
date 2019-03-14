@@ -23,7 +23,7 @@ class UpWorkReader
     private $job_type                       = self::JOB_TYPE_ALL;
     private $experience_entry_level         = false;
     private $experience_intermediate_level  = false;
-    private $experience_expert_level        = false;
+    private $experience_expert_level        = true;
     private $sort_by                        = self::SORT_NEWEST;
 
     public function __construct($options = [])

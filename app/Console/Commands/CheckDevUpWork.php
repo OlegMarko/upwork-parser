@@ -61,7 +61,7 @@ class CheckDevUpWork extends Command
             'frontend',
             'development',
             'Mysql',
-            'Postygresql',
+            'Postgresql',
             'Develop website',
             'CRM',
             'ERP',
@@ -75,13 +75,26 @@ class CheckDevUpWork extends Command
 
             $jobs = array_merge_recursive($jobs, $newJobs);
 
-            sleep(10);
+            sleep(3);
         }
 
         $settings = [
             'username' => 'UpWork Bot',
             'channel' => '#upwork',
             'link_names' => true
+        ];
+
+        $categories = [
+            'Desktop Software Development',
+            'Web Development',
+            'Web, Mobile Design',
+            'Web, Other - Software Development',
+            'Database Administration',
+            'ERP / CRM Software',
+            'Other - IT & Networking',
+            'Data Mining & Management',
+            'Product Design',
+            'Web, Mobile & Software Dev',
         ];
 
         $client = new Client(env('SLACK_WEBHOOK_URL_2'), $settings);
@@ -92,6 +105,17 @@ class CheckDevUpWork extends Command
         foreach($jobs as $job) {
             if ($now->timestamp - (int)$job->created_timestamp > ((15 * 60) + 1)) continue;
             if (in_array($job->title, $existing)) continue;
+
+            $isCategory = false;
+
+            foreach ($categories as $category) {
+                if (strpos(mb_strtolower(htmlspecialchars_decode($job->category)), mb_strtolower($category)) != false) {
+                    $isCategory = true;
+                    break;
+                }
+            }
+
+            if (!$isCategory) { continue; }
 
             $existing[] = $job->title;
 
